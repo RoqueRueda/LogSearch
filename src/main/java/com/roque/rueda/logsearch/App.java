@@ -19,8 +19,8 @@ public class App
     public static void main( String[] args )
     {
         // Select a file
-        File file = openFile();
-        //File file = fixedFile();
+        //File file = openFile();
+        File file = fixedFile();
 
         if (fileIsNull(file)) {
             // Can't continue if there is no file
