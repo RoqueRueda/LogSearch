@@ -2,8 +2,8 @@ package com.roque.rueda.logsearch;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
-import java.net.URL;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class LogReader {
