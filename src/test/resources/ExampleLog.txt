@@ -1,0 +1,73 @@
+=== Some other info ===
+
+<ns3:AddContainerRequest RequestID="Invalid"
+  Timestamp="2020-11-17T11:45:31.604276-08:00"
+  xmlns:ns6="kalmar.com/common/qc"
+  xmlns:ns5="kalmar.com/common/railoperations"
+  xmlns:ns2="kalmar.com/common/objects"
+  xmlns:ns4="kalmar.com/common/vesseloperations"
+  xmlns:ns3="kalmar.com/controlSystem/messages">
+  <ContainerInformation xsi:type="ns2:SingleContainer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ns2:Container>
+      <ns2:ID ID="Layla"/>
+      <ns2:Name Name="Layla"/>
+      <ns2:ISOCode>Layla</ns2:ISOCode>
+      <ns2:Length>Layla</ns2:Length>
+      <ns2:Height>Layla</ns2:Height>
+      <ns2:Width>Layla</ns2:Width>
+      <ns2:Weight>Layla</ns2:Weight>
+      <ns2:MeasureMetaData>
+        <ns2:Weight>0</ns2:Weight>
+        <ns2:Height>0</ns2:Height>
+        <ns2:ISOCode>Layla</ns2:ISOCode>
+      </ns2:MeasureMetaData>
+    </ns2:Container>
+    <ns2:Location xsi:type="ns2:SlotPosition" Tentative="false">
+      <ns2:Stack xsi:type="ns2:DynamicStack">
+        <ns2:Length>Layla</ns2:Length>
+        <ns2:LaneID>Layla</ns2:LaneID>
+        <ns2:Offset>Layla</ns2:Offset>
+      </ns2:Stack>
+      <ns2:Tier>1</ns2:Tier>
+      <ns2:Orientation>West</ns2:Orientation>
+    </ns2:Location>
+  </ContainerInformation>
+  <BlockTargetStack>false</BlockTargetStack>
+</ns3:AddContainerRequest>
+
+=== Real Example ===
+
+<ns3:AddContainerRequest RequestID="281eb81c-fca3-426a-9918-e30dd9bac743"
+  Timestamp="2020-11-17T11:45:31.604276-08:00"
+  xmlns:ns6="kalmar.com/common/qc"
+  xmlns:ns5="kalmar.com/common/railoperations"
+  xmlns:ns2="kalmar.com/common/objects"
+  xmlns:ns4="kalmar.com/common/vesseloperations"
+  xmlns:ns3="kalmar.com/controlSystem/messages">
+  <ContainerInformation xsi:type="ns2:SingleContainer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ns2:Container>
+      <ns2:ID ID="9f8da0cf-5508-433e-aa9e-e77ae0b4cc3c"/>
+      <ns2:Name Name="TCNU7146564"/>
+      <ns2:ISOCode>45G1</ns2:ISOCode>
+      <ns2:Length>12192</ns2:Length>
+      <ns2:Height>2895</ns2:Height>
+      <ns2:Width>2438</ns2:Width>
+      <ns2:Weight>11558</ns2:Weight>
+      <ns2:MeasureMetaData>
+        <ns2:Weight>0</ns2:Weight>
+        <ns2:Height>0</ns2:Height>
+        <ns2:ISOCode>45G1</ns2:ISOCode>
+      </ns2:MeasureMetaData>
+    </ns2:Container>
+    <ns2:Location xsi:type="ns2:SlotPosition" Tentative="false">
+      <ns2:Stack xsi:type="ns2:DynamicStack">
+        <ns2:Length>Unknown</ns2:Length>
+        <ns2:LaneID>QCA001.03</ns2:LaneID>
+        <ns2:Offset>73946</ns2:Offset>
+      </ns2:Stack>
+      <ns2:Tier>1</ns2:Tier>
+      <ns2:Orientation>West</ns2:Orientation>
+    </ns2:Location>
+  </ContainerInformation>
+  <BlockTargetStack>false</BlockTargetStack>
+</ns3:AddContainerRequest>
