@@ -1,11 +1,14 @@
 package com.roque.rueda.logsearch;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.io.*;
+import javax.xml.xpath.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.regex.Matcher;
 
@@ -15,8 +18,9 @@ import java.util.regex.Matcher;
 public class App 
 {
     public static final String CONFIG_NAME = "config.properties";
-    public static final String LOG_READER = "Log Reader";
-    public static final String NO_FILE_SELECTED_ERROR = "No log file was selected";
+    public static final String LOG_FILE_KEY = "LogFile";
+    public static final String REGEX_BASE_KEY = "Regex_%d";
+    public static final String XPATH_BASE_KEY = "XPath_%d_%d";
 
     public static void main( String[] args )
     {
@@ -25,13 +29,11 @@ public class App
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         Properties properties = new Properties();
         String logFilePath = null;
-        String regex = null;
 
         try(InputStream input = loader.getResourceAsStream(CONFIG_NAME)) {
             properties.load(input);
             System.out.println("Loading properties file!");
-            logFilePath = properties.getProperty("LogFile");
-            regex = properties.getProperty("Regex");
+            logFilePath = properties.getProperty(LOG_FILE_KEY);
         } catch (FileNotFoundException e) {
             System.err.println("Properties file was not found :(!");
             System.exit(-1);
@@ -44,28 +46,77 @@ public class App
 
         if (fileIsNull(file)) {
             // Can't continue if there is no file
+            System.err.println("Can't create the file:" +  file.getAbsolutePath());
             System.exit(-1);
         }
 
         System.out.println("Provided file is:" + file.getAbsolutePath());
         LogReader reader = LogReader.fromFilePath(file.getAbsolutePath());
-        System.out.println("Your regex is:" + regex);
 
-        RegexInput regexInput = new RegexInput(regex);
-        Matcher matcher = regexInput.getPattern().matcher(reader.getFileText());
+        int regexCounter = 1;
+        boolean regexPendingForRead = true;
 
-        while (matcher.find()) {
-            System.out.println("One Match found at start:" + matcher.start() + ", end:" + matcher.end());
-            final Document document = LogXmlParser.parseStringToXml(matcher.group());
+        // Iterate until there is no more regex
+        while (regexPendingForRead) {
+            try(InputStream input = loader.getResourceAsStream(CONFIG_NAME)) {
+                properties.load(input);
+                String regexKey = String.format(REGEX_BASE_KEY, regexCounter);
+                System.out.println("Retrieve regex key:" + regexKey);
+                String regexFromFile = properties.getProperty(regexKey);
+                System.out.println("Your regex is:" + regexFromFile);
 
-            if (document != null) {
-                System.out.println("=== XML Found ===");
-                System.out.println(document.getDocumentElement());
-                System.out.println();
+                if (regexFromFile == null) {
+                    // There is no more regex
+                    break;
+                }
 
-                //showXmlWindow(document);
-            } else {
-                System.out.println("Can not parse the xml! :'c");
+                // Find the matches of the regex from file
+                RegexInput regexInput = new RegexInput(regexFromFile);
+                Matcher matcher = regexInput.getPattern().matcher(reader.getFileText());
+
+                while (matcher.find()) {
+                    System.out.println("One Match found at start:" + matcher.start() + ", end:" + matcher.end());
+                    final Document xmlDocument = LogXmlParser.parseStringToXml(matcher.group());
+
+                    if (xmlDocument != null) {
+                        System.out.println("=== XML Found ===");
+                        //System.out.println(xmlDocument.getDocumentElement());
+
+                        int xPathCounter = 1;
+                        String currentXpath;
+                        String xPathKey = String.format(XPATH_BASE_KEY, regexCounter, xPathCounter);
+                        while ((currentXpath = properties.getProperty(xPathKey)) != null) {
+                            System.out.println("Current XPath:" + currentXpath);
+
+                            XPathFactory xpathfactory = XPathFactory.newInstance();
+                            XPath xPath = xpathfactory.newXPath();
+                            XPathExpression expression = xPath.compile(currentXpath);
+                            Object result = expression.evaluate(xmlDocument, XPathConstants.NODESET);
+                            NodeList nodes = (NodeList) result;
+                            if (nodes.getLength() > 0) {
+                                System.out.println("===Match for XPath===");
+                                for (int i = 0; i < nodes.getLength(); i++) {
+                                    System.out.println("Result of XPath:" + nodes.item(i).getNodeValue());
+                                    System.out.println(nodes.item(i));
+                                }
+                            } else {
+                                System.out.println("===No match found for Xpath: " + currentXpath + "===");
+                                System.out.println("Matches: " + nodes.getLength());
+                            }
+
+                            xPathCounter ++;
+                            xPathKey = String.format(XPATH_BASE_KEY, regexCounter, xPathCounter);
+                            System.out.println();
+                            //nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+                            //showXmlWindow(document);
+                        }
+                    } else {
+                        System.out.println("Can not parse the xml! :'c");
+                    }
+                }
+                regexCounter ++;
+            } catch (IOException | XPathExpressionException e) {
+                regexPendingForRead = false;
             }
         }
     }

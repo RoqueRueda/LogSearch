@@ -24,6 +24,7 @@ public final class LogXmlParser {
     public static Document parseStringToXml(String inputXml) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             return builder.parse(new InputSource(new StringReader(inputXml)));
         } catch (ParserConfigurationException | SAXException | IOException e) {
