@@ -10,7 +10,7 @@
   <ContainerInformation xsi:type="ns2:SingleContainer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ns2:Container>
       <ns2:ID ID="Layla"/>
-      <ns2:Name Name="Layla"/>
+      <ns2:Name Name="MNB123456"/>
       <ns2:ISOCode>Layla</ns2:ISOCode>
       <ns2:Length>Layla</ns2:Length>
       <ns2:Height>Layla</ns2:Height>

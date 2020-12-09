@@ -21,6 +21,7 @@ public class App
     public static final String LOG_FILE_KEY = "LogFile";
     public static final String REGEX_BASE_KEY = "Regex_%d";
     public static final String XPATH_BASE_KEY = "XPath_%d_%d";
+    public static final String CONTAINER_NAME_KEY = "ContainerName";
 
     public static void main( String[] args )
     {
@@ -63,6 +64,7 @@ public class App
                 String regexKey = String.format(REGEX_BASE_KEY, regexCounter);
                 System.out.println("Retrieve regex key:" + regexKey);
                 String regexFromFile = properties.getProperty(regexKey);
+                String containerName = properties.getProperty(CONTAINER_NAME_KEY);
                 System.out.println("Your regex is:" + regexFromFile);
 
                 if (regexFromFile == null) {
@@ -80,14 +82,12 @@ public class App
 
                     if (xmlDocument != null) {
                         System.out.println("=== XML Found ===");
-                        //System.out.println(xmlDocument.getDocumentElement());
 
                         int xPathCounter = 1;
                         String currentXpath;
                         String xPathKey = String.format(XPATH_BASE_KEY, regexCounter, xPathCounter);
                         while ((currentXpath = properties.getProperty(xPathKey)) != null) {
                             System.out.println("Current XPath:" + currentXpath);
-
                             XPathFactory xpathfactory = XPathFactory.newInstance();
                             XPath xPath = xpathfactory.newXPath();
                             XPathExpression expression = xPath.compile(currentXpath);
@@ -96,8 +96,10 @@ public class App
                             if (nodes.getLength() > 0) {
                                 System.out.println("===Match for XPath===");
                                 for (int i = 0; i < nodes.getLength(); i++) {
-                                    System.out.println("Result of XPath:" + nodes.item(i).getNodeValue());
-                                    System.out.println(nodes.item(i));
+                                    if (nodes.item(i).getNodeValue().equalsIgnoreCase(containerName)) {
+                                        System.out.println("Result of XPath:" + nodes.item(i).getNodeValue());
+                                        System.out.println(nodes.item(i));
+                                    }
                                 }
                             } else {
                                 System.out.println("===No match found for Xpath: " + currentXpath + "===");
