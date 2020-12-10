@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 public class LogReader {
 
-    private String filePath;
+    private final String filePath;
 
     /**
      * Builds a new instance using the file path to get a reference to the log file

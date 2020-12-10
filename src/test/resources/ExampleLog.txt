@@ -10,7 +10,7 @@
   <ContainerInformation xsi:type="ns2:SingleContainer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ns2:Container>
       <ns2:ID ID="Layla"/>
-      <ns2:Name Name="Layla"/>
+      <ns2:Name Name="MNB123456"/>
       <ns2:ISOCode>Layla</ns2:ISOCode>
       <ns2:Length>Layla</ns2:Length>
       <ns2:Height>Layla</ns2:Height>
@@ -71,3 +71,34 @@
   </ContainerInformation>
   <BlockTargetStack>false</BlockTargetStack>
 </ns3:AddContainerRequest>
+
+<?xml version="1.0" encoding="utf-8"?>
+<ContainerEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Timestamp="2020-11-24T19:36:28.2649464Z" xmlns="kalmar.com/controlSystem/messages">
+  <ContainerInformation xmlns:q1="kalmar.com/common/objects" xsi:type="q1:SingleContainer" xmlns="">
+    <q1:Container>
+      <q1:ID ID="TCNU7146564" />
+      <q1:Name Name="TCNU7146564" />
+      <q1:ISOCode>2200</q1:ISOCode>
+      <q1:Length>6058</q1:Length>
+      <q1:Height>0</q1:Height>
+      <q1:Width>2438</q1:Width>
+      <q1:Weight>23000</q1:Weight>
+      <q1:Identified>true</q1:Identified>
+      <q1:MetaData />
+      <q1:MeasuredMetaData />
+    </q1:Container>
+    <q1:Location xsi:type="q1:SlotPosition">
+      <q1:Stack xsi:type="q1:DynamicStack">
+        <q1:Length>Feet20</q1:Length>
+        <q1:MetaData>
+          <q1:SecondaryLogicalName>QCA001.05</q1:SecondaryLogicalName>
+        </q1:MetaData>
+        <q1:LaneID>QCA001.05</q1:LaneID>
+        <q1:Offset>260140</q1:Offset>
+      </q1:Stack>
+      <q1:Tier>1</q1:Tier>
+      <q1:Orientation>Unknown</q1:Orientation>
+    </q1:Location>
+  </ContainerInformation>
+  <Action xmlns="">Added</Action>
+</ContainerEvent>

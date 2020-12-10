@@ -1,16 +1,13 @@
 package com.roque.rueda.logsearch;
 
+import com.roque.rueda.logsearch.file.FileUtils;
+import com.roque.rueda.logsearch.messages.xml.AddContainerRequest;
+import com.roque.rueda.logsearch.messages.xml.ContainerEvent;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 import javax.swing.*;
-import javax.xml.xpath.*;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.regex.Matcher;
+import java.util.Objects;
 
 /**
  * Made with love :-D
@@ -19,31 +16,56 @@ public class App
 {
     public static final String CONFIG_NAME = "config.properties";
     public static final String LOG_FILE_KEY = "LogFile";
-    public static final String REGEX_BASE_KEY = "Regex_%d";
-    public static final String XPATH_BASE_KEY = "XPath_%d_%d";
     public static final String CONTAINER_NAME_KEY = "ContainerName";
 
     public static void main( String[] args )
     {
         System.out.println("Start");
         // Open properties file
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        Properties properties = new Properties();
-        String logFilePath = null;
+        File file = obtainLogFileFromProperties();
+        String containerNameValue = FileUtils.obtainPropertyFromPropertiesFile(CONTAINER_NAME_KEY);
 
-        try(InputStream input = loader.getResourceAsStream(CONFIG_NAME)) {
-            properties.load(input);
-            System.out.println("Loading properties file!");
-            logFilePath = properties.getProperty(LOG_FILE_KEY);
-        } catch (FileNotFoundException e) {
-            System.err.println("Properties file was not found :(!");
-            System.exit(-1);
-        } catch (IOException e) {
-            System.err.println("IOException :(!");
-            System.exit(-1);
+        AddContainerRequest addContainerRequest = AddContainerRequest.readFromXml(
+            Objects.requireNonNull(file).getAbsolutePath(),
+            AddContainerRequest.obtainRegexFromPropertiesFile(),
+            AddContainerRequest.obtainXpathForContainerName(),
+            containerNameValue
+        );
+
+        if (addContainerRequest != null) {
+            System.out.println("Add Container Request");
+            System.out.println(addContainerRequest.getContainerName());
         }
 
-        File file = new File(logFilePath);
+        ContainerEvent containerEvent = ContainerEvent.readFromXml(
+            Objects.requireNonNull(file).getAbsolutePath(),
+            ContainerEvent.obtainRegexFromPropertiesFile(),
+            ContainerEvent.obtainXpathForContainerName(),
+            containerNameValue
+        );
+
+        if (containerEvent != null) {
+            System.out.println("Container Event");
+            System.out.println(containerEvent.getContainerName());
+        }
+
+        assert addContainerRequest != null;
+        assert containerEvent != null;
+
+        if(
+            addContainerRequest.getContainerName().equals(containerEvent.getContainerName()) &&
+            addContainerRequest.getLaneId().equals(containerEvent.getLaneId()) &&
+            addContainerRequest.getOffset().equals(containerEvent.getOffset()) &&
+            addContainerRequest.getTier().equals(containerEvent.getTier()) &&
+            containerEvent.getAction().equals("Added")
+        ) {
+            System.out.println("Success");
+        } else {
+            System.out.println("Fail");
+        }
+
+
+        /*
 
         if (fileIsNull(file)) {
             // Can't continue if there is no file
@@ -120,6 +142,16 @@ public class App
             } catch (IOException | XPathExpressionException e) {
                 regexPendingForRead = false;
             }
+        }
+         */
+    }
+
+    private static File obtainLogFileFromProperties() {
+        String logFilePath = FileUtils.obtainPropertyFromPropertiesFile(LOG_FILE_KEY);
+        if (logFilePath != null) {
+            return new File(logFilePath);
+        } else {
+            return null;
         }
     }
 
